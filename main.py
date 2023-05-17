@@ -1,6 +1,8 @@
+from dataclasses import Field
+from unittest.util import _MAX_LENGTH
 from fastapi import FastAPI, Body
 from fastapi.responses import HTMLResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 
  
@@ -12,8 +14,8 @@ app.version = "0.0.1" # para cambiar el la verión de la documentacion con Sawgg
 
 class Movie(BaseModel):
     id: Optional[int] = None
-    title: str
-    overview: str
+    title: str = Field(_MAX_LENGTH=15)
+    overview: str 
     year: int
     rating: float
     category: str
@@ -40,7 +42,7 @@ movies = [
 @app.get('/', tags = ['home']) # para cambiar la ruta
 
 def message():
-    return HTMLResponse('<h1>Helo word!</h1>')
+    return HTMLResponse('<h1>Hello Word</h1>')
 
 
 @app.get('/movies', tags = ['movies']) # para cambiar la ruta
@@ -77,7 +79,7 @@ def create_movie(movie: Movie):
 @app.put(f'/movies/{id}', tags=['movies'])
 def update_movie(id: int, movie: Movie):
     for item in movies: 
-            if item['id'] == id:
+            if item["id"] == id:
                 item['title'] = movie.title
                 item['overview'] = movie.overview
                 item['year'] = movie.year
