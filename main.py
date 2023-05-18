@@ -14,11 +14,23 @@ app.version = "0.0.1" # para cambiar el la verión de la documentacion con Sawgg
 
 class Movie(BaseModel):
     id: Optional[int] = None
-    title: str = Field(_MAX_LENGTH=15)
-    overview: str 
-    year: int
+    title: str = Field(min_length=1, max_length=15)
+    overview: str = Field(min_length=15, max_length=50)
+    year: int = Field(default = 2022, le = 2023)
     rating: float
     category: str
+    
+    class Config:
+        schema_extra = {
+             "example": {
+                 "id": 1,
+                 "title": "Titulo Nuevo",
+                 "overview": "Descripción corta",
+		         "year": "2022",
+		         "rating": 9.8,
+		         "category": "Acción"                
+             }   
+        }
     
     
 movies = [
@@ -79,7 +91,7 @@ def create_movie(movie: Movie):
 @app.put(f'/movies/{id}', tags=['movies'])
 def update_movie(id: int, movie: Movie):
     for item in movies: 
-            if item["id"] == id:
+            if item['id'] == id:
                 item['title'] = movie.title
                 item['overview'] = movie.overview
                 item['year'] = movie.year
@@ -89,7 +101,7 @@ def update_movie(id: int, movie: Movie):
         
 @app.delete(f'/movies/{id}', tags=['movies'])
 def delate_movie(id: int):
-    for item in movies: 
+    for item in movies:
         if item['id'] == id:
             movies.remove(item)
             return movies
