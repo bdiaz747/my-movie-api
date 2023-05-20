@@ -55,17 +55,17 @@ def message():
     return HTMLResponse('<h1>Hello Word</h1>')
 
 
-@app.get('/movies', tags=['movies'], response_model = List[Movie])  # para cambiar la ruta
+@app.get('/movies', tags=['movies'], response_model = List[Movie], status_code = 200)  # para cambiar la ruta
 def get_movies() -> List[Movie]:
-    return JSONResponse(content=movies)
+    return JSONResponse(status_code = 200,content=movies)
 
 
-@app.get(f'/movies/{id}', tags=['movies'], response_model = Movie)  # para cambiar la ruta
+@app.get(f'/movies/{id}', tags=['movies'], response_model = Movie, status_code = 200)  # para cambiar la ruta
 def get_movie(id: int = Path(ge=1, le=2000)) -> Movie:
     for item in movies:
         if item["id"] == id:
             return JSONResponse(content=item)
-    return JSONResponse(content=[])
+        return JSONResponse(status_code = 404,content=[])
 
 
 @app.get(f'/movies/', tags=['movies'], response_model = List[Movie])  # para cambiar la ruta
@@ -79,13 +79,13 @@ def get_movies_by_title(title: str):
     return title
 
 
-@app.post(f'/movies', tags=['movies'], response_model = dict)
+@app.post(f'/movies', tags=['movies'], response_model = dict, status_code = 201,)
 def create_movie(movie: Movie) -> dict:
     movies.append(movie)
-    return JSONResponse(content = {"messege": "Película registrada"})
+    return JSONResponse(status_code = 201,content = {"messege": "Película registrada"})
 
 
-@app.put(f'/movies/{id}', tags=['movies'], response_model = dict)
+@app.put(f'/movies/{id}', tags=['movies'], response_model = dict, status_code = 200)
 def update_movie(id: int, movie: Movie) -> dict:
     for item in movies:
         if item["id"] == id:
@@ -94,12 +94,12 @@ def update_movie(id: int, movie: Movie) -> dict:
             item['year'] = movie.year
             item['rating'] = movie.rating
             item['category'] = movie.category
-            return JSONResponse(content = {"messege": "Película mofificada"})
+            return JSONResponse(status_code = 200,content = {"messege": "Película mofificada"})
 
 
-@app.delete(f'/movies/{id}', tags=['movies'])
+@app.delete(f'/movies/{id}', tags=['movies'],status_code = 200)
 def delate_movie(id: int) -> dict:
     for item in movies:
         if item["id"] == id:
             movies.remove(item)
-            return JSONResponse(content = {"messege": "Se ha eleminado la película "})
+            return JSONResponse(status_code = 200,content = {"messege": "Se ha eleminado la película "})
