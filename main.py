@@ -3,11 +3,16 @@ from fastapi import FastAPI, Body, Path, Query
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel, Field
 from typing import Optional, List
+from jwt_manager import create_token
 
 app = FastAPI()
 
 app.title = "My app con FastAPI"  # para cambiar el título de la documentación con Swagger
 app.version = "0.0.1"  # para cambiar la versión de la documentación con Swagger
+
+class User(BaseModel):
+    email: str
+    password: str
 
 class Movie(BaseModel):
     id: Optional[int] = None
@@ -53,6 +58,14 @@ movies = [
 @app.get('/', tags=['home'])  # para cambiar la ruta
 def message():
     return HTMLResponse('<h1>Hello Word</h1>')
+
+@app.post('/login', tags=['auth'])
+def login(user:User):
+    if user.email == "admin@gmail.com" and user.password == "admin":
+        token: str = create_token(user.dict())
+    return JSONResponse(status_code = 200, content = token)
+
+
 
 
 @app.get('/movies', tags=['movies'], response_model = List[Movie], status_code = 200)  # para cambiar la ruta
