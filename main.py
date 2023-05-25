@@ -4,11 +4,15 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 from jwt_manager import create_token, validate_token
 from fastapi.security import HTTPBearer
+from config.database import Session, engine, Base
+from models.movie import Movie
 
 app = FastAPI()
 
 app.title = "My app con FastAPI"  # para cambiar el título de la documentación con Swagger
 app.version = "0.0.1"  # para cambiar la versión de la documentación con Swagger
+
+Base.metadata.create_all(bind = engine)
 
 
 class JWTBearer(HTTPBearer):
