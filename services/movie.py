@@ -35,6 +35,9 @@ class MovieService():
         movie.category = data.category
         self.db.commit()
         return
-    
+    def deleted_movie(self, id: int):
+        result = self.db.query(MovieModel).filter(MovieModel.id == id).delete()
+        self.db.commit()
+        return result
         
         
